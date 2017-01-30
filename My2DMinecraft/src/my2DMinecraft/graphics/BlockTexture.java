@@ -33,7 +33,9 @@ public enum BlockTexture {
 	FRUIT_2		(6, 2, "f"),
 	SIGN			(7, 2, "f"),
 	
-	AIR(9, 9);
+	BREAKING	(0, 5),
+	
+	AIR(9, 2);
 	
 	public Texture texture;
 	public int steps;

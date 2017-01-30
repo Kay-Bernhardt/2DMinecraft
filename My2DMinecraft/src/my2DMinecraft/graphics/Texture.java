@@ -5,12 +5,10 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
 import my2DMinecraft.utils.BufferUtils;
-import my2DMinecraft.utils.FileUtils;
 
 public class Texture
 {

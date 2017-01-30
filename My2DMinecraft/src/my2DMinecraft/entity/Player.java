@@ -22,7 +22,7 @@ public class Player
 	private float[] tcs;
 	
 	private VertexArray mesh;
-	private Texture texture;
+	private Texture[] texture;
 	private Vector3f position;
 	
 	private float movementSpeed;
@@ -30,6 +30,12 @@ public class Player
 	private float jumpSpeed;
 	private float fallAcceleration;
 	private float maxFallSpeed;
+	
+	int wait;
+	int animationStep;
+	boolean animationTop;
+	boolean animationBottom;
+	boolean walking;
 	
 	private Vector3f[] collisionArray;
 	
@@ -58,7 +64,7 @@ public class Player
 		};
 		
 		mesh = new VertexArray(vertices, indices, tcs);
-		texture = new Texture(0, 103);
+		texture = new Texture[]{new Texture(0, 103), new Texture(1, 103), new Texture(2, 103)};
 		position = new Vector3f();
 		
 		movementSpeed = 5.0f;
@@ -66,6 +72,12 @@ public class Player
 		jumpSpeed = -30.0f;
 		fallAcceleration = 3.0f;
 		maxFallSpeed = 20.0f;
+		
+		animationStep = 1;
+		wait = 0;
+		animationTop = false;
+		animationBottom = false;
+		walking = false;
 	}
 	
 	private void flipTexture(int dir)
@@ -99,21 +111,75 @@ public class Player
 	public void update(Vector3f[] collisionArray)
 	{
 		this.collisionArray = collisionArray;
+		walking = false;
 		
 		
 		fall();
 		handleInput();		
 		World.camera.setPosition(position);
+		
+		if(!walking)
+		{
+			animationStep = 1;
+		}
+		else
+		{
+			renderWalking();
+		}
+	}
+	
+	private void renderWalking()
+	{
+		wait++;
+		
+		if(wait >= 7)
+		{
+			if(animationTop)
+			{
+				//count down
+				if(animationStep > 0)
+				{
+					animationStep--;
+					animationBottom = false;
+				}
+				else
+				{
+					animationTop = false;
+					animationBottom = true;
+				}
+				
+			}
+			else if(animationBottom)
+			{
+				if(animationStep < 2)
+				{
+					animationStep++;
+				}
+				else
+				{
+					animationBottom = false;
+					animationTop = true;
+				}
+			}
+			else
+			{
+				animationBottom = true;
+			}
+			
+			wait = 0;
+		}
 	}
 	
 	public void render()
 	{		
+		//System.out.println("animationStep:" + animationStep);
+		
 		Shader.BLOCK.enable();
 		mesh.bind();
-		texture.bind();
+		texture[animationStep].bind();
 		Shader.BLOCK.setUniformMatrix4f("vw_matrix", Matrix4f.translate(new Vector3f(-position.x, -position.y, 0.1f)).multiply(Matrix4f.translate(position)));
 		BlockMesh.draw();
-		texture.unbind();
+		texture[animationStep].unbind();
 		mesh.unBind();
 		Shader.BLOCK.disable();
 	}
@@ -124,12 +190,14 @@ public class Player
 		{
 			flipTexture(1);
 			addPosition(new Vector3f(-movementSpeed, 0.0f, 0.0f));
+			walking = true;
 		}
 		
 		if(Input.isKeyDown(GLFW_KEY_A))
 		{
 			flipTexture(-1);
 			addPosition(new Vector3f(movementSpeed, 0.0f, 0.0f));
+			walking = true;
 		}
 		
 		if(Input.isKeyDown(GLFW_KEY_W))

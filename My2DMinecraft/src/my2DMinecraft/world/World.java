@@ -6,6 +6,7 @@ import my2DMinecraft.block.Block;
 import my2DMinecraft.entity.Player;
 import my2DMinecraft.graphics.BlockMesh;
 import my2DMinecraft.graphics.Shader;
+import my2DMinecraft.graphics.Texture;
 import my2DMinecraft.input.MouseButtonInput;
 import my2DMinecraft.input.MouseInput;
 import my2DMinecraft.math.Matrix4f;
@@ -27,16 +28,23 @@ public class World
 	public static Camera camera;
 	public Player player;
 	
+	private Vector3f mouseBlockpos;
+	private Vector3f trueMousepos;
+	private boolean isBreaking;
+	private int wait;
+	private Block breakBlock;
+	
+	
 	public World()
 	{
 		new BlockMesh();
 		camera = new Camera();
 		world = WorldGenerator.createWorld();
 		player = new Player();
+		breakBlock = new Block();
+		breakBlock.setTexture(BREAKING);
 		
-		
-		
-		Vector3f pos =	calculatePositionInBlocks(camera.getPosition());
+		Vector3f pos =	calculateBlockPos(camera.getPosition());
 		boolean validLocation = false;
 		while (!validLocation)
 		{
@@ -45,8 +53,9 @@ public class World
 				validLocation = true;
 			}
 			camera.addPosition(new Vector3f(0.0f, -(Block.BLOCK_SIZE * 2), 0.0f));
-			pos = calculatePositionInBlocks(camera.getPosition());
+			pos = calculateBlockPos(camera.getPosition());
 		}
+		camera.addPosition(new Vector3f(Block.BLOCK_SIZE, Block.BLOCK_SIZE, 0));
 		player.setPosition(camera.getPosition());
 	}
 	
@@ -54,81 +63,48 @@ public class World
 	{
 		player.update(getSolidBlocksAroundPlayerPosition());		
 		
+		//System.out.println("Camera: " + camera.getPosition());
+		//System.out.println("Mouse: " + trueMousepos);
+		
 		if(MouseButtonInput.leftClicked)
-		{
-			Vector3f vec = new Vector3f(((camera.getPosition().x + ((Window.WIDTH / 2) - (float)MouseInput.mouseX))),
-												 ((camera.getPosition().y - (Window.HEIGHT/ 2)) + (float)MouseInput.mouseY), 0.0f);	
+		{			
+			trueMousepos = new Vector3f(camera.getPosition().x - ((float)MouseInput.mouseX - (Window.WIDTH /2)), (camera.getPosition().y - (Window.HEIGHT/ 2) + (float)MouseInput.mouseY) + (Block.BLOCK_SIZE * 2), 0.0f);
 			
-			Vector3f blockpos = calculateAbsoluteBlockPos(vec);
 			
-			if(!world[(int)blockpos.x + (int)blockpos.y * WORLD_WIDTH].containsTexture(AIR))
+			
+			mouseBlockpos = calculateBlockPos(new Vector3f(trueMousepos));
+			Vector3f absBlockpos = calculateBlockPos(trueMousepos);
+			
+			if(!world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(AIR))
 			{
-				world[(int)blockpos.x + (int)blockpos.y * WORLD_WIDTH].setTexture(AIR);
-			}			
-		}		
-	}
-	
-	private Vector3f calculateAbsoluteBlockPos(Vector3f pos)
-	{		
-		pos.x = (((LEFT - pos.x) - Block.BLOCK_SIZE) / (Block.BLOCK_SIZE * 2));		
-		pos.y = -(((BOTTOM + pos.y) - (Block.BLOCK_SIZE * 3)) / (Block.BLOCK_SIZE * 2));		
-		return pos;
-	}
-	
-	
-	public void render()
-	{		
-		renderBlocks();
-		
-		player.render(/*Matrix4f.translate(new Vector3f(-camera.getPosition().x, -camera.getPosition().y,0)).multiply(camera.getProjection())*/);
-		
-		
-	}
-	
-	private void renderBlocks()
-	{
-		Vector3f pos = calculatePositionInBlocks(camera.getPosition());
-		//render blocks in world		
-		Shader.BLOCK.enable();
-		BlockMesh.bind();
-		
-		for(int x = 0; x < VIEW_X; x++)
-		{
-			for(int y = 0; y < VIEW_Y; y++)
-			{
-				//only render blocks in view
-				Block b = null;
-				int bx = (x + (int)pos.x - (VIEW_X / 2));
-				int by = (y + (int)pos.y - (VIEW_Y / 2));
-				
-				try
-				{					
-					b = world[bx + by * WORLD_WIDTH];
-				}catch(ArrayIndexOutOfBoundsException e) {}
-				
-				if(b != null)
+				//render block breakTexture
+				wait++;
+				isBreaking = true;
+				if(wait == 20)
 				{
-					Matrix4f matrix = Matrix4f.translate(new Vector3f(LEFT + bx * (Block.BLOCK_SIZE * 2), BOTTOM + by * (Block.BLOCK_SIZE * 2), 0)).multiply(camera.getProjection());
-					b.render(matrix);
-				}
+					world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].setTexture(AIR);
+					isBreaking = false;
+					wait = 0;
+				}				
 			}
 		}
-		
-		/*
-		Block b = world[0];
-		b.setTexture(STONE);
-		Matrix4f matrix = Matrix4f.translate(new Vector3f(-camera.getPosition().x - (Window.WIDTH / 2) + (float)MouseInput.mouseX,
-																		  -camera.getPosition().y + (Window.HEIGHT/ 2) - (float)MouseInput.mouseY, 0.2f)).multiply(Matrix4f.translate(camera.getPosition()));
-		b.render(matrix);
-		
-		BlockMesh.unbind();
-		Shader.BLOCK.disable();	
-		*/
+		else
+		{
+			isBreaking = false;
+			wait = 0;
+		}
 	}
 	
-	public Camera getCamera()
-	{
-		return camera;
+	private Vector3f calculateBlockPos(Vector3f position)
+	{		
+		Vector3f pos = new Vector3f(position);		
+		
+		pos.x = -((LEFT + pos.x) - Block.BLOCK_SIZE) / (Block.BLOCK_SIZE * 2);		
+		pos.y = -((BOTTOM + pos.y) - (Block.BLOCK_SIZE * 3)) / (Block.BLOCK_SIZE * 2);
+		
+		//System.out.println("Absolute position: " + pos);
+		
+		return pos;
 	}
 	
 	private Vector3f calculatePositionInBlocks(Vector3f position)
@@ -144,6 +120,64 @@ public class World
 		return pos;
 	}
 	
+	
+	public void render()
+	{		
+		renderBlocks();
+		
+		player.render();
+		
+		
+	}
+	
+	private void renderBlocks()
+	{
+		Vector3f pos = calculateBlockPos(camera.getPosition());
+		
+		//render blocks in world		
+		Shader.BLOCK.enable();
+		BlockMesh.bind();
+		
+		Block b = null;
+		
+		for(int x = 0; x < VIEW_X; x++)
+		{
+			for(int y = 0; y < VIEW_Y; y++)
+			{
+				//only render blocks in view				
+				int bx = (x + (int)pos.x - (VIEW_X / 2));
+				int by = (y + (int)pos.y - (VIEW_Y / 2));
+				
+				try
+				{					
+					b = world[bx + by * WORLD_WIDTH];
+				}catch(ArrayIndexOutOfBoundsException e) {}
+				
+				if(b != null)
+				{
+					Matrix4f matrix = Matrix4f.translate(new Vector3f(LEFT + bx * (Block.BLOCK_SIZE * 2), BOTTOM + by * (Block.BLOCK_SIZE * 2), 0)).multiply(camera.getProjection());
+					b.render(matrix);
+				}
+			}			
+		}		
+		
+		if(isBreaking)
+		{
+			
+			Matrix4f matrix = Matrix4f.translate(new Vector3f((LEFT + (int)mouseBlockpos.x * (Block.BLOCK_SIZE * 2)) + camera.getPosition().x, (BOTTOM + (int)mouseBlockpos.y * (Block.BLOCK_SIZE * 2)) + camera.getPosition().y, 0));//.multiply(Matrix4f.translate(new Vector3f(LEFT + (int)mouseBlockpos.x * (Block.BLOCK_SIZE * 2), BOTTOM + (int)mouseBlockpos.y * (Block.BLOCK_SIZE * 2), 0)));
+			breakBlock.render(matrix);
+		}
+		//Matrix4f matrix = Matrix4f.translate(new Vector3f(-camera.getPosition().x - (Window.WIDTH / 2) + (float)MouseInput.mouseX,
+		//-camera.getPosition().y + (Window.HEIGHT/ 2) - (float)MouseInput.mouseY, 0.2f)).multiply(Matrix4f.translate(camera.getPosition()));				
+		
+		BlockMesh.unbind();
+		Shader.BLOCK.disable();
+	}
+	
+	public Camera getCamera()
+	{
+		return camera;
+	}	
 	
 	private Vector3f[] getBlocksAroundPosition(Vector3f pos)
 	{		
