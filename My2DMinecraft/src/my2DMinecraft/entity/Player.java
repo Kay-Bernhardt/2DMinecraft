@@ -249,8 +249,8 @@ public class Player
 		//System.out.println("Player x: " + pos1.x + " Player y: " + pos1.y);
 		//System.out.println("Block x: " + pos2.x + " Block y: " + pos2.y);
 		
-		if(pos1.x < pos2.x + (Block.BLOCK_SIZE * 2) - 10 && // -10 because the char does not fill the entire width of a block
-			pos1.x + (Block.BLOCK_SIZE * 2) - 10 > pos2.x && //-10 because the char does not fill the entire width of a block
+		if(pos1.x < pos2.x + (Block.BLOCK_SIZE * 2) - (Block.BLOCK_SIZE / 6) && // - because the char does not fill the entire width of a block
+			pos1.x + (Block.BLOCK_SIZE * 2) - (Block.BLOCK_SIZE / 6) > pos2.x && //-10 because the char does not fill the entire width of a block
 			pos1.y < pos2.y + (Block.BLOCK_SIZE * 2) &&
 			pos1.y + (Block.BLOCK_SIZE * 2) + Block.BLOCK_SIZE > pos2.y)
 		{

@@ -6,7 +6,6 @@ import my2DMinecraft.block.Block;
 import my2DMinecraft.entity.Player;
 import my2DMinecraft.graphics.BlockMesh;
 import my2DMinecraft.graphics.Shader;
-import my2DMinecraft.graphics.Texture;
 import my2DMinecraft.input.MouseButtonInput;
 import my2DMinecraft.input.MouseInput;
 import my2DMinecraft.math.Matrix4f;
@@ -55,7 +54,7 @@ public class World
 			camera.addPosition(new Vector3f(0.0f, -(Block.BLOCK_SIZE * 2), 0.0f));
 			pos = calculateBlockPos(camera.getPosition());
 		}
-		camera.addPosition(new Vector3f(Block.BLOCK_SIZE, Block.BLOCK_SIZE, 0));
+		camera.addPosition(new Vector3f(-Block.BLOCK_SIZE, -Block.BLOCK_SIZE, 0));
 		player.setPosition(camera.getPosition());
 	}
 	
@@ -178,7 +177,7 @@ public class World
 	{
 		return camera;
 	}	
-	
+	/*
 	private Vector3f[] getBlocksAroundPosition(Vector3f pos)
 	{		
 		int arrayWidth = 3;
@@ -200,6 +199,7 @@ public class World
 		
 		return vectorArray;
 	}
+	*/
 	
 	private Vector3f[] getSolidBlocksAroundPlayerPosition()
 	{

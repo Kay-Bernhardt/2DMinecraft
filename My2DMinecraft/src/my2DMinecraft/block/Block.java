@@ -7,7 +7,7 @@ import my2DMinecraft.math.Matrix4f;
 
 public class Block
 {
-	public static final int BLOCK_SIZE = 32;
+	public static final int BLOCK_SIZE = 32 / 2;
 	
 	private BlockState state;
 	

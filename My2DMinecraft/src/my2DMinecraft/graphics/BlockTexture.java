@@ -24,14 +24,15 @@ public enum BlockTexture {
 	WATER_4(8, 1),
 	WATER_5(9, 1),
 	
-	RED_POTION	(0, 2, "f"),
-	BLUE_POTION	(1, 2, "f"),
+	POTION_RED	(0, 2, "f"),
+	POTION_BLUE	(1, 2, "f"),
 	CRYSTAL		(2, 2, "f"),
 	CHEST_CLOSED(3, 2, "f"),
 	CHEST_OPEN	(4, 2, "f"),
-	FRUIT_1		(5, 2, "f"),
-	FRUIT_2		(6, 2, "f"),
-	SIGN			(7, 2, "f"),
+	CARROT		(5, 2, "f"),
+	APPLE_GREEN	(6, 2, "f"),
+	APPLE_RED	(7, 2, "f"),
+	SIGN			(8, 2, "f"),
 	
 	BREAKING	(0, 5),
 	
