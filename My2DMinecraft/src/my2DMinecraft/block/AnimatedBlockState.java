@@ -1,7 +1,5 @@
 package my2DMinecraft.block;
 
-import java.util.Random;
-
 import my2DMinecraft.graphics.BlockMesh;
 import my2DMinecraft.graphics.BlockTexture;
 import my2DMinecraft.graphics.Shader;
@@ -28,7 +26,7 @@ public class AnimatedBlockState implements BlockState
 		
 		timeBetweenSteps = 60;
 		currStep = 0;
-		counter = new Random().nextInt(timeBetweenSteps);
+		counter = 0;//new Random().nextInt(timeBetweenSteps);
 	}
 	
 	@Override

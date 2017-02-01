@@ -177,7 +177,7 @@ public class Player
 		Shader.BLOCK.enable();
 		mesh.bind();
 		texture[animationStep].bind();
-		Shader.BLOCK.setUniformMatrix4f("vw_matrix", Matrix4f.translate(new Vector3f(-position.x, -position.y, 0.1f)).multiply(Matrix4f.translate(position)));
+		Shader.BLOCK.setUniformMatrix4f("vw_matrix", Matrix4f.translate(new Vector3f(-position.x, -position.y, 0.1f)).multiply(World.camera.getProjection()));//Matrix4f.translate(position)));
 		BlockMesh.draw();
 		texture[animationStep].unbind();
 		mesh.unBind();

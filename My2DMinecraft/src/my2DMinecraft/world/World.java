@@ -14,7 +14,7 @@ import my2DMinecraft.utils.Window;
 
 public class World
 {
-	public static final int WORLD_WIDTH = 500;
+	public static final int WORLD_WIDTH = 200;
 	public static final int WORLD_HEIGHT = 128;
 	public static final int WORLD_SIZE = WORLD_WIDTH * WORLD_HEIGHT;
 	public static final int LEFT = -(WORLD_WIDTH * (Block.BLOCK_SIZE * 2)) / 2;
@@ -36,6 +36,8 @@ public class World
 	
 	public World()
 	{
+		System.out.println(LEFT + " " + BOTTOM);
+		
 		new BlockMesh();
 		camera = new Camera();
 		world = WorldGenerator.createWorld();
@@ -123,10 +125,7 @@ public class World
 	public void render()
 	{		
 		renderBlocks();
-		
 		player.render();
-		
-		
 	}
 	
 	private void renderBlocks()

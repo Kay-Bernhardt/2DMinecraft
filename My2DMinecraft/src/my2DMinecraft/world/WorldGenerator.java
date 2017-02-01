@@ -7,7 +7,6 @@ import java.util.Random;
 
 import my2DMinecraft.block.Block;
 import my2DMinecraft.graphics.BlockTexture;
-import my2DMinecraft.utils.SimplexNoise;
 import my2DMinecraft.utils.SimplexNoise_octave;
 
 public class WorldGenerator
@@ -28,6 +27,9 @@ public class WorldGenerator
 		rockLayer();
 		simplexWorld();
 		
+		placeGold();
+		placeCrystals();
+		
 		grassLayer();
 		lakes();			
 			
@@ -47,7 +49,7 @@ public class WorldGenerator
 		{
 			for(int x = 0; x < WORLD_WIDTH; x++)
 			{
-				if(simplex[x][y] > 0.5f)
+				if(simplex[x][y] > 0.36f)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(STONE);
 				}
@@ -93,6 +95,10 @@ public class WorldGenerator
 				if(y == 2)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(LAVA_1);
+				}
+				if(y == WORLD_HEIGHT - 1)
+				{
+					world[x + y * WORLD_WIDTH].setTexture(STONE);
 				}
 			}
 		}
@@ -308,6 +314,34 @@ public class WorldGenerator
 		System.out.println("Number of Lakes: " + numLakes);
 	}
 	
+	private static void placeGold()
+	{
+		for(int y = 0; y < WORLD_HEIGHT / 2 + 7; y++)
+		{
+			for(int x = 0; x < WORLD_WIDTH; x++)
+			{
+				if(world[x + y * WORLD_WIDTH].containsTexture(STONE) && rnd.nextInt(100) < 3)
+				{
+					world[x + y * WORLD_WIDTH].setTexture(GOLD);
+				}
+			}
+		}
+	}
+	
+	private static void placeCrystals()
+	{
+		for(int y = 1; y < WORLD_HEIGHT / 2 + 7; y++)
+		{
+			for(int x = 0; x < WORLD_WIDTH; x++)
+			{
+				if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(STONE) && (world[x + y * WORLD_WIDTH].containsTexture(AIR)) && rnd.nextInt(100) < 5)
+				{
+					world[x + y * WORLD_WIDTH].setTexture(CRYSTAL);
+				}
+			}
+		}
+	}
+	
 	private static void generateDeko()
 	{
 		for(int y = WORLD_HEIGHT / 2 - 5; y < WORLD_HEIGHT; y++)
@@ -315,9 +349,9 @@ public class WorldGenerator
 			for(int x = 0; x < WORLD_WIDTH; x++)
 			{						
 				//tree trunks
-				if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && world[x + y * WORLD_WIDTH].containsTexture(AIR) && !world[(x - 1) + y * WORLD_WIDTH].containsTexture(WOOD) && rnd.nextInt(100) < 15)
+				if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && world[x + y * WORLD_WIDTH].containsTexture(AIR) && !world[(x - 1) + (y + 1) * WORLD_WIDTH].containsTexture(WOOD) && rnd.nextInt(100) < 15)
 				{
-					for(int ty = y; ty < y + rnd.nextInt(2) + 4; ty++)//tree trunk between 5 and 10 high
+					for(int ty = y; ty < y + rnd.nextInt(3) + 4; ty++)//tree trunk between 4 and 6 high
 					{
 						world[x + ty * WORLD_WIDTH].setTexture(WOOD);
 					}
