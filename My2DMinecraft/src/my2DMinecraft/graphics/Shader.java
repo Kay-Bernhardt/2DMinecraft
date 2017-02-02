@@ -15,6 +15,7 @@ public class Shader
 	public static final int TCOORD_ATTRIB = 1;
 	
 	public static Shader BLOCK;
+	public static Shader BIRD;
 	
 	private boolean enabled = false;
 	
@@ -29,6 +30,7 @@ public class Shader
 	public static void LoadAll()
 	{
 		BLOCK = new Shader("block.vert", "block.frag");
+		BIRD = new Shader("bird.vert", "bird.frag");
 	}
 	
 	public int getUniform(String name)

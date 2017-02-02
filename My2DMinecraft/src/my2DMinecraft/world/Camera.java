@@ -7,12 +7,10 @@ import my2DMinecraft.utils.Window;
 public class Camera
 {
 	private Vector3f position;
-	//private Matrix4f projection;
 	
 	public Camera()
 	{
 		position = new Vector3f();
-		//projection = new Matrix4f();
 	}
 	
 	public Matrix4f getProjection()
@@ -22,20 +20,22 @@ public class Camera
 	
 	public void setPosition(Vector3f position)
 	{
-		this.position = isValidPosition(position);
-		System.out.println(this.position);
+		this.position = inBounds(position);
 	}
 	
 	public void addPosition(Vector3f position)
 	{
 		this.position.add(position);
-		this.position.add(new Vector3f(00.f, 00.f, -0.1f));
+		if(this.position.z > -0.5 && !(this.position.z < -0.9))
+		{
+			this.position.add(new Vector3f(00.f, 00.f, -0.1f));
+		}		
 	}
 	
 	
-	public Vector3f isValidPosition(Vector3f pos)
+	public Vector3f inBounds(Vector3f pos)
 	{
-		//TODO rename and cleanup
+		//TODO cleanup
 		
 		int VIEW_X = Window.getWidth() / 2;
 		int VIEW_Y = Window.getHeight() / 2;
@@ -45,19 +45,19 @@ public class Camera
 		
 		if(pos1.x < pos2.x)
 		{
-			return new Vector3f(pos2.x, pos.y, 0.0f);
+			return new Vector3f(pos2.x, pos.y, -0.8f);
 		}
 		else if(pos1.x + VIEW_X > -World.LEFT)
 		{
-			return new Vector3f(-pos2.x, pos.y, 0.0f);
+			return new Vector3f(-pos2.x, pos.y, -0.8f);
 		}
 		else if (pos1.y < pos2.y)
 		{
-			return new Vector3f(pos.x, -pos2.y - VIEW_Y, 0.0f);
+			return new Vector3f(pos.x, -pos2.y - VIEW_Y, -0.8f);
 		}
 		else if(pos1.y + (2 * VIEW_Y) > -pos2.y)
 		{
-			return new Vector3f(pos.x, pos2.y + VIEW_Y, 0.0f);
+			return new Vector3f(pos.x, pos2.y + VIEW_Y, -0.8f);
 		}
 		return pos;
 	}

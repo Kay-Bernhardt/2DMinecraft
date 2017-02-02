@@ -15,8 +15,7 @@ import my2DMinecraft.math.Vector3f;
 import my2DMinecraft.world.World;
 
 public class Player
-{
-	
+{	
 	private float[] vertices;
 	private byte[]  indices;
 	private float[] tcs;
@@ -43,24 +42,24 @@ public class Player
 	{
 		vertices = new float[]
 		{
-				-Block.BLOCK_SIZE, -Block.BLOCK_SIZE * 2, 0.0f,
-				-Block.BLOCK_SIZE,  Block.BLOCK_SIZE * 2, 0.0f,
-				 Block.BLOCK_SIZE,  Block.BLOCK_SIZE * 2, 0.0f,
-				 Block.BLOCK_SIZE, -Block.BLOCK_SIZE * 2, 0.0f
+			-Block.BLOCK_SIZE, -Block.BLOCK_SIZE * 2, 0.0f,
+			-Block.BLOCK_SIZE,  Block.BLOCK_SIZE * 2, 0.0f,
+			 Block.BLOCK_SIZE,  Block.BLOCK_SIZE * 2, 0.0f,
+			 Block.BLOCK_SIZE, -Block.BLOCK_SIZE * 2, 0.0f
 		};
 		
 		indices = new byte[]
 		{
-				0, 1, 2,
-				2, 3, 0
+			0, 1, 2,
+			2, 3, 0
 		};
 		
 		tcs = new float[]
 		{
-				0.0f, 1.0f,
-				0.0f, 0.0f,
-				1.0f, 0.0f,
-				1.0f, 1.0f
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f
 		};
 		
 		mesh = new VertexArray(vertices, indices, tcs);
@@ -86,10 +85,10 @@ public class Player
 		{
 			tcs = new float[] //D
 			{
-					0.0f, 1.0f,
-					0.0f, 0.0f,
-					1.0f, 0.0f,
-					1.0f, 1.0f
+				0.0f, 1.0f,
+				0.0f, 0.0f,
+				1.0f, 0.0f,
+				1.0f, 1.0f
 			};
 			
 			mesh = new VertexArray(vertices, indices, tcs);
@@ -98,12 +97,11 @@ public class Player
 		{
 			tcs = new float[]	//A
 			{
-					1.0f, 1.0f,
-					1.0f, 0.0f,
-					0.0f, 0.0f,
-					0.0f, 1.0f
-			};
-			
+				1.0f, 1.0f,
+				1.0f, 0.0f,
+				0.0f, 0.0f,
+				0.0f, 1.0f
+			};			
 			mesh = new VertexArray(vertices, indices, tcs);
 		}		
 	}
@@ -112,7 +110,6 @@ public class Player
 	{
 		this.collisionArray = collisionArray;
 		walking = false;
-		
 		
 		fall();
 		handleInput();		
@@ -146,8 +143,7 @@ public class Player
 				{
 					animationTop = false;
 					animationBottom = true;
-				}
-				
+				}				
 			}
 			else if(animationBottom)
 			{
@@ -165,19 +161,16 @@ public class Player
 			{
 				animationBottom = true;
 			}
-			
 			wait = 0;
 		}
 	}
 	
 	public void render()
-	{		
-		//System.out.println("animationStep:" + animationStep);
-		
+	{
 		Shader.BLOCK.enable();
 		mesh.bind();
 		texture[animationStep].bind();
-		Shader.BLOCK.setUniformMatrix4f("vw_matrix", Matrix4f.translate(new Vector3f(-position.x, -position.y, 0.1f)).multiply(World.camera.getProjection()));//Matrix4f.translate(position)));
+		Shader.BLOCK.setUniformMatrix4f("vw_matrix", Matrix4f.translate(new Vector3f(-position.x, -position.y, 0.1f)).multiply(World.camera.getProjection()));
 		BlockMesh.draw();
 		texture[animationStep].unbind();
 		mesh.unBind();
@@ -236,8 +229,7 @@ public class Player
 		if(!colision)
 		{
 			this.position.add(position);
-		}
-				
+		}				
 	}
 	
 	private boolean isColliding(Vector3f pos1 , Vector3f pos2)

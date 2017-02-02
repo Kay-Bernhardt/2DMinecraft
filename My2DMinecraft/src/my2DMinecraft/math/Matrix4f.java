@@ -98,4 +98,13 @@ public class Matrix4f
 	{
 		return BufferUtils.createFloatBuffer(elements);
 	}
+	
+	public String toString()
+	{
+		return "=======\n"+
+				elements[0 + 0 * 4] + " " + elements[1 + 0 * 4] + " " + elements[2 + 0 * 4] + " " + elements[3 + 0 * 4] + "\n" +
+				elements[0 + 1 * 4] + " " + elements[1 + 1 * 4] + " " + elements[2 + 1 * 4] + " " + elements[3 + 1 * 4] + "\n" +
+				elements[0 + 2 * 4] + " " + elements[1 + 2 * 4] + " " + elements[2 + 2 * 4] + " " + elements[3 + 2 * 4] + "\n" +
+				elements[0 + 3 * 4] + " " + elements[1 + 3 * 4] + " " + elements[2 + 3 * 4] + " " + elements[3 + 3 * 4] + "\n";
+	}
 }

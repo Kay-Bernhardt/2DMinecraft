@@ -86,6 +86,9 @@ public class Window
 		Matrix4f pr_matrix = Matrix4f.orthographic(-WIDTH / 2, WIDTH / 2, -HEIGHT / 2, HEIGHT / 2, -1.0f, 1.0f);		
 		Shader.BLOCK.setUniformMatrix4f("pr_matrix", pr_matrix);
 		Shader.BLOCK.setUniform1i("tex", 1);
+		
+		Shader.BIRD.setUniformMatrix4f("pr_matrix", pr_matrix);
+		Shader.BIRD.setUniform1i("tex", 1);
 	}
 	
 	public static void swapBuffer()
