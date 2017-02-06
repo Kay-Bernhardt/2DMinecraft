@@ -24,7 +24,14 @@ public class AnimatedBlockState implements BlockState
 			this.texture[j] = temp[i];
 		}
 		
-		timeBetweenSteps = 60;
+		if(this.texture[0] == BlockTexture.BREAKING_1)
+		{
+			timeBetweenSteps = 7;
+		}
+		else
+		{
+			timeBetweenSteps = 60;
+		}		
 		currStep = 0;
 		counter = 0;//new Random().nextInt(timeBetweenSteps);
 	}

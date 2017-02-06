@@ -1,6 +1,8 @@
 package my2DMinecraft;
 
 import static org.lwjgl.opengl.GL11.*;
+
+import my2DMinecraft.input.MouseButtonInput;
 import my2DMinecraft.utils.Window;
 import my2DMinecraft.world.World;
 
@@ -16,6 +18,7 @@ public class Game
 	public void update()
 	{	
 		world.update();
+		MouseButtonInput.rightReleased = false;
 	}
 	
 	public void render()

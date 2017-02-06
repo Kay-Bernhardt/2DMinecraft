@@ -33,10 +33,22 @@ public enum BlockTexture {
 	APPLE_GREEN	(6, 2, "f"),
 	APPLE_RED	(7, 2, "f"),
 	SIGN			(8, 2, "f"),
+	HEMP			(9, 2, "f"),
 	
-	BREAKING	(0, 5),
+	BREAKING_1	(0, 5, "3"),
+	BREAKING_2	(1, 5),
+	BREAKING_3	(2, 5),
+	HOTBAR_1		(4, 5),
+	HOTBAR_2		(5, 5),
+	HOTBAR_3		(6, 5),
+	HOTBAR_4		(7, 5),
 	
-	AIR(9, 2);
+	HEMP_TOP		(0, 7, "f"),
+	
+	HEMP_BOTTOM		(0, 8, "f"),
+	THORNY_PLANT	(1, 8, "f"),
+	
+	AIR				(9, 9);
 	
 	public Texture texture;
 	public int steps;

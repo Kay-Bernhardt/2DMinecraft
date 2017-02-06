@@ -2,12 +2,12 @@ package my2DMinecraft.graphics;
 
 import my2DMinecraft.block.Block;
 
-public class BlockMesh
+public class BlockMesh2
 {
 	public static VertexArray mesh;
 	
 	
-	public BlockMesh()
+	public BlockMesh2()
 	{
 		float[] vertices = new float[]
 		{
@@ -25,10 +25,10 @@ public class BlockMesh
 		
 		float[] tcs = new float[]
 		{
-				0.0f, 1.0f,
-				0.0f, 0.0f,
+				1.0f, 1.0f,
 				1.0f, 0.0f,
-				1.0f, 1.0f
+				0.0f, 0.0f,
+				0.0f, 1.0f
 		};
 		
 		mesh = new VertexArray(vertices, indices, tcs);

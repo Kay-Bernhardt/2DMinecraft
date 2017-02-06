@@ -79,7 +79,7 @@ public class Window
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		glClearColor(0.3f, 0.4f, 0.8f, 1.0f);
+		glClearColor(0.4f, 0.5f, 1f, 1.0f);
 		
 		Shader.LoadAll();	
 		

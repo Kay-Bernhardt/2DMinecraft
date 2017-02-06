@@ -4,6 +4,7 @@ import java.util.Random;
 
 import my2DMinecraft.block.Block;
 import my2DMinecraft.graphics.BlockMesh;
+import my2DMinecraft.graphics.BlockMesh2;
 import my2DMinecraft.graphics.Shader;
 import my2DMinecraft.graphics.Texture;
 import my2DMinecraft.graphics.VertexArray;
@@ -35,6 +36,7 @@ public class Bird
 	
 	public Bird()
 	{
+		/*
 		vertices = new float[]
 		{
 			-Block.BLOCK_SIZE, -Block.BLOCK_SIZE, 0.0f,
@@ -58,6 +60,12 @@ public class Bird
 		};
 		
 		mesh = new VertexArray(vertices, indices, tcs);
+		*/
+		tcs = new float[]
+				{
+					0.0f
+				};
+		mesh = BlockMesh.mesh;
 		texture = new Texture[]{new Texture(0, 6), new Texture(1, 6), new Texture(2, 6)};
 		Random rnd = new Random();
 		
@@ -69,7 +77,7 @@ public class Bird
 		animationBottom = false;
 		walking = true;
 		speed = new Vector3f(Block.BLOCK_SIZE / 4 + (-rnd.nextFloat() + rnd.nextFloat()), 0.0f, 0.0f);
-		altitude = rnd.nextInt(5) + 5;		
+		altitude = rnd.nextInt(5) + 4;		
 		
 		position = new Vector3f((World.LEFT + (Window.getWidth() / 2) + rnd.nextInt(2000)), (-altitude - 10) * (Block.BLOCK_SIZE * 2), 0.1f + id); //spawn 20 blocks up
 		if(!rnd.nextBoolean())
@@ -137,6 +145,7 @@ public class Bird
 	{
 		if(dir > 0 && tcs[0] == 1)
 		{
+			/*
 			tcs = new float[] //D
 			{
 					0.0f, 1.0f,
@@ -146,9 +155,16 @@ public class Bird
 			};
 			
 			mesh = new VertexArray(vertices, indices, tcs);
+			*/
+			tcs = new float[]	//A
+					{
+							0.0f
+					};
+			mesh = BlockMesh.mesh;
 		}
 		else if(dir < 0 && tcs[0] == 0)
 		{
+			/*
 			tcs = new float[]	//A
 			{
 					1.0f, 1.0f,
@@ -158,6 +174,12 @@ public class Bird
 			};
 			
 			mesh = new VertexArray(vertices, indices, tcs);
+			*/
+			tcs = new float[]	//A
+					{
+							1.0f
+					};
+			mesh = BlockMesh2.mesh;
 		}		
 	}
 	

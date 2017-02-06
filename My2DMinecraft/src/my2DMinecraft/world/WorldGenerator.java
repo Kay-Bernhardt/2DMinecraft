@@ -316,16 +316,60 @@ public class WorldGenerator
 	
 	private static void placeGold()
 	{
-		for(int y = 0; y < WORLD_HEIGHT / 2 + 7; y++)
+		for(int y = 2; y < WORLD_HEIGHT / 2 + 7; y++)
 		{
 			for(int x = 0; x < WORLD_WIDTH; x++)
 			{
-				if(world[x + y * WORLD_WIDTH].containsTexture(STONE) && rnd.nextInt(100) < 3)
+				if(world[x + y * WORLD_WIDTH].containsTexture(STONE) && rnd.nextInt(100) < 1)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(GOLD);
 				}
+				
+				if(world[x + y * WORLD_WIDTH].containsTexture(STONE) &&  world[x + (y - 1) * WORLD_WIDTH].containsTexture(GOLD) && !isNextToGold(x, y - 1))
+				{
+					if(rnd.nextBoolean())
+					{
+						world[x + y * WORLD_WIDTH].setTexture(GOLD);
+					}
+					else
+					{
+						world[(x + 1) + (y - 1) * WORLD_WIDTH].setTexture(GOLD);
+					}
+				}
+				else if(world[x + y * WORLD_WIDTH].containsTexture(STONE) &&  world[x + (y - 1) * WORLD_WIDTH].containsTexture(GOLD) && rnd.nextInt(100) < 20)
+				{
+					world[x + y * WORLD_WIDTH].setTexture(GOLD);
+					
+					if(rnd.nextBoolean())
+					{
+						world[(x - 1) + (y - 1) * WORLD_WIDTH].setTexture(GOLD);
+					}
+					if(rnd.nextBoolean())
+					{
+						world[(x + 1) + y * WORLD_WIDTH].setTexture(GOLD);
+					}
+					if(rnd.nextBoolean())
+					{
+						world[(x - 1) + y * WORLD_WIDTH].setTexture(GOLD);
+					}
+					if(rnd.nextBoolean())
+					{
+						world[(x + 1) + (y - 1) * WORLD_WIDTH].setTexture(GOLD);
+					}
+					if(rnd.nextBoolean())
+					{
+						world[(x - 1) + (y + 1) * WORLD_WIDTH].setTexture(GOLD);
+					}
+				}
 			}
 		}
+	}
+	
+	private static boolean isNextToGold(int x, int y)
+	{
+		return (world[x + (y - 1) * WORLD_WIDTH].containsTexture(GOLD) ||
+				  world[(x + 1) + y * WORLD_WIDTH].containsTexture(GOLD) ||
+				  world[(x - 1) + y * WORLD_WIDTH].containsTexture(GOLD));
 	}
 	
 	private static void placeCrystals()
@@ -349,7 +393,7 @@ public class WorldGenerator
 			for(int x = 0; x < WORLD_WIDTH; x++)
 			{						
 				//tree trunks
-				if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && world[x + y * WORLD_WIDTH].containsTexture(AIR) && !world[(x - 1) + (y + 1) * WORLD_WIDTH].containsTexture(WOOD) && rnd.nextInt(100) < 15)
+				if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && world[x + y * WORLD_WIDTH].containsTexture(AIR) && (!world[(x - 1) + (y + 1) * WORLD_WIDTH].containsTexture(WOOD) && !world[(x + 1) + (y + 1) * WORLD_WIDTH].containsTexture(WOOD)) && rnd.nextInt(100) < 15)
 				{
 					for(int ty = y; ty < y + rnd.nextInt(3) + 4; ty++)//tree trunk between 4 and 6 high
 					{
@@ -370,45 +414,79 @@ public class WorldGenerator
 				{
 					createTreeLeafs(x, y);
 				}
+				//apples
+				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 35 && isUnderTree(x, y))
+				{
+					if(rnd.nextBoolean())
+					{
+						world[x + y * WORLD_WIDTH].setTexture(APPLE_GREEN);
+					}
+					else
+					{
+						world[x + y * WORLD_WIDTH].setTexture(APPLE_RED);
+					}					
+				}
 				//flowers
 				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 8)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(FLOWER);
 				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 8)
+				//carrot
+				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && !isUnderTree(x, y) && rnd.nextInt(100) < 5)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(CARROT);
 				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 8)
-				{
-					world[x + y * WORLD_WIDTH].setTexture(APPLE_RED);
-				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 8)
-				{
-					world[x + y * WORLD_WIDTH].setTexture(APPLE_GREEN);
-				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 8)
+				//signs
+				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 1)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(SIGN);
 				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 8)
+				//potion
+				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 1)
 				{
-					world[x + y * WORLD_WIDTH].setTexture(POTION_RED);
+					if(rnd.nextBoolean())
+					{
+						world[x + y * WORLD_WIDTH].setTexture(POTION_BLUE);
+					}
+					else
+					{
+						world[x + y * WORLD_WIDTH].setTexture(POTION_RED);
+					}
 				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 8)
-				{
-					world[x + y * WORLD_WIDTH].setTexture(POTION_BLUE);
-				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 5)
-				{
-					world[x + y * WORLD_WIDTH].setTexture(CHEST_OPEN);
-				}
-				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 2)
+				//chest
+				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && rnd.nextInt(100) < 1)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(CHEST_CLOSED);
 				}
+				//thorny plant
+				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && !isUnderTree(x, y) && rnd.nextInt(100) < 5)
+				{
+					world[x + y * WORLD_WIDTH].setTexture(THORNY_PLANT);
+				}
+				//hemp
+				else if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && (world[x + y * WORLD_WIDTH].containsTexture(AIR) || world[x + y * WORLD_WIDTH].isBackground()) && !isUnderTree(x, y) && rnd.nextInt(100) < 5)
+				{
+					if(rnd.nextBoolean())
+					{
+						world[x + y * WORLD_WIDTH].setTexture(HEMP);
+					}
+					else
+					{
+						world[x + y * WORLD_WIDTH].setTexture(HEMP_BOTTOM);
+						world[x + (y + 1) * WORLD_WIDTH].setTexture(HEMP_TOP);
+					}
+				}
 			}
 		}
+	}
+	
+	private static boolean isUnderTree(int x, int y)
+	{
+		return (world[(x + 2) + y * WORLD_WIDTH].containsTexture(WOOD) ||
+				  world[(x + 1) + y * WORLD_WIDTH].containsTexture(WOOD) ||
+				  world[(x - 2) + y * WORLD_WIDTH].containsTexture(WOOD) ||
+				  world[(x - 1) + y * WORLD_WIDTH].containsTexture(WOOD) ||
+				  world[x + y * WORLD_WIDTH].containsTexture(WOOD));
 	}
 	
 	private static void createTreeLeafs(int x, int y)

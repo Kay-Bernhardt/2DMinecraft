@@ -6,6 +6,7 @@ import my2DMinecraft.block.Block;
 import my2DMinecraft.entity.Bird;
 import my2DMinecraft.entity.Player;
 import my2DMinecraft.graphics.BlockMesh;
+import my2DMinecraft.graphics.BlockMesh2;
 import my2DMinecraft.graphics.Shader;
 import my2DMinecraft.input.MouseButtonInput;
 import my2DMinecraft.input.MouseInput;
@@ -40,19 +41,18 @@ public class World
 		System.out.println(LEFT + " " + BOTTOM);
 		
 		new BlockMesh();
+		new BlockMesh2();
+		
 		camera = new Camera();
 		world = WorldGenerator.createWorld();
 		
 		player = new Player();
-		birds = new Bird[100];
+		birds = new Bird[10];
 		
 		for(int i = 0; i < birds.length; i++)
 		{
 			birds[i] = new Bird();
-		}
-		
-		breakBlock = new Block();
-		breakBlock.setTexture(BREAKING);
+		}		
 		
 		Vector3f pos =	calculateBlockPos(camera.getPosition());
 		boolean validLocation = false;
@@ -72,20 +72,32 @@ public class World
 	public void update()
 	{
 		player.update(getSolidBlocksAroundPlayerPosition());
+		
 		for(int i = 0; i < birds.length; i++)
 		{
 			birds[i].update();
 		}
 		
+		mouseInput();		
+	}
+	
+	private void mouseInput()
+	{
+		trueMousepos = new Vector3f(camera.getPosition().x - ((float)MouseInput.mouseX - (Window.WIDTH /2)), (camera.getPosition().y - (Window.HEIGHT/ 2) + (float)MouseInput.mouseY) + (Block.BLOCK_SIZE * 2), 0.0f);
+		
+		mouseBlockpos = calculateBlockPos(new Vector3f(trueMousepos));
+		Vector3f absBlockpos = calculateBlockPos(trueMousepos);
+		
 		if(MouseButtonInput.leftClicked)
 		{			
-			trueMousepos = new Vector3f(camera.getPosition().x - ((float)MouseInput.mouseX - (Window.WIDTH /2)), (camera.getPosition().y - (Window.HEIGHT/ 2) + (float)MouseInput.mouseY) + (Block.BLOCK_SIZE * 2), 0.0f);
-			
-			mouseBlockpos = calculateBlockPos(new Vector3f(trueMousepos));
-			Vector3f absBlockpos = calculateBlockPos(trueMousepos);
-			
 			if(!world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(AIR))
 			{
+				if(breakBlock == null)
+				{
+					breakBlock = new Block();
+					breakBlock.setTexture(BREAKING_1);
+				}				
+				
 				//render block breakTexture
 				wait++;
 				isBreaking = true;
@@ -94,6 +106,7 @@ public class World
 					world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].setTexture(AIR);
 					isBreaking = false;
 					wait = 0;
+					breakBlock = null;
 				}				
 			}
 		}
@@ -101,6 +114,19 @@ public class World
 		{
 			isBreaking = false;
 			wait = 0;
+			breakBlock = null;
+		}
+		
+		if(MouseButtonInput.rightReleased)
+		{
+			if(world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(CHEST_CLOSED))
+			{
+				world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].setTexture(CHEST_OPEN);
+			}
+			else if (world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(CHEST_OPEN))
+			{
+				world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].setTexture(CHEST_CLOSED);
+			}
 		}
 	}
 	
