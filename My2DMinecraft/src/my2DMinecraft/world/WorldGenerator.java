@@ -25,14 +25,16 @@ public class WorldGenerator
 		fillWithAir();
 		dirtLayer();
 		rockLayer();
-		simplexWorld();
+		simplexStone();
+		simplexDirt();
 		
 		placeGold();
 		placeCrystals();
 		
 		grassLayer();
 		lakes();			
-			
+		sandUnderLakes();	
+		
 		generateDeko();		
 		
 		border();
@@ -41,7 +43,7 @@ public class WorldGenerator
 		return world;
 	}
 	
-	private static void simplexWorld()
+	private static void simplexStone()
 	{
 		SimplexNoise_octave sn = new SimplexNoise_octave((int)System.currentTimeMillis());
 		float[][] simplex = sn.generateSimplexNoise(WORLD_WIDTH, WORLD_HEIGHT / 2);
@@ -58,6 +60,22 @@ public class WorldGenerator
 					world[x + y * WORLD_WIDTH].setTexture(AIR);
 				}
 				
+			}
+		}
+	}
+	
+	private static void simplexDirt()
+	{
+		SimplexNoise_octave sn = new SimplexNoise_octave((int)System.currentTimeMillis());
+		float[][] simplex = sn.generateSimplexNoise(WORLD_WIDTH, WORLD_HEIGHT / 2);
+		for(int y = 0; y < WORLD_HEIGHT / 2; y++)
+		{
+			for(int x = 0; x < WORLD_WIDTH; x++)
+			{
+				if(simplex[x][y] > 0.8f && !world[x + y * WORLD_WIDTH].containsTexture(AIR))
+				{
+					world[x + y * WORLD_WIDTH].setTexture(DIRT);
+				}				
 			}
 		}
 	}
@@ -80,10 +98,6 @@ public class WorldGenerator
 		{
 			for(int y = WORLD_HEIGHT - 1; y > -1; y--)
 			{
-				if(x == 0)
-				{
-					world[x + y * WORLD_WIDTH].setTexture(STONE);
-				}
 				if(y == 0)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(LAVA_5);
@@ -95,10 +109,6 @@ public class WorldGenerator
 				if(y == 2)
 				{
 					world[x + y * WORLD_WIDTH].setTexture(LAVA_1);
-				}
-				if(y == WORLD_HEIGHT - 1)
-				{
-					world[x + y * WORLD_WIDTH].setTexture(STONE);
 				}
 			}
 		}
@@ -310,8 +320,41 @@ public class WorldGenerator
 				}		
 			}
 		}
+		//fill gaps
+		for(int y = WORLD_HEIGHT / 2 - 5; y < WORLD_HEIGHT / 2 + 20; y++)
+		{
+			for(int x = 4; x < WORLD_WIDTH - 4; x++)
+			{
+				if(world[x + (y - 1) * WORLD_WIDTH].containsTexture(GRASS) && world[(x + 1) + (y - 1) * WORLD_WIDTH].containsTexture(WATER_1) && world[(x - 1) + (y - 1) * WORLD_WIDTH].containsTexture(WATER_1))
+				{
+					world[x + (y - 1) * WORLD_WIDTH].setTexture(WATER_1);
+				}
+			}
+		}
 		}catch(Exception e){System.out.println("Lakes out of bounds");}
 		System.out.println("Number of Lakes: " + numLakes);
+	}
+	
+	private static void sandUnderLakes()
+	{
+		for(int y = WORLD_HEIGHT / 2 - 5; y < WORLD_HEIGHT / 2 + 20; y++)
+		{
+			for(int x = 4; x < WORLD_WIDTH - 4; x++)
+			{
+				if((world[x + y * WORLD_WIDTH].containsTexture(WATER_1) || world[x + y * WORLD_WIDTH].containsTexture(WATER_4) || world[x + y * WORLD_WIDTH].containsTexture(WATER_5)) && !(world[x + (y - 1) * WORLD_WIDTH].containsTexture(WATER_1) || world[x + (y - 1) * WORLD_WIDTH].containsTexture(WATER_4) || world[x + (y - 1) * WORLD_WIDTH].containsTexture(WATER_5)))
+				{
+					world[x + (y - 1) * WORLD_WIDTH].setTexture(SAND);
+				}
+				if(world[x + y * WORLD_WIDTH].containsTexture(WATER_1) && world[(x - 1) + y * WORLD_WIDTH].containsTexture(GRASS))
+				{
+					world[(x - 1) + y * WORLD_WIDTH].setTexture(SAND);
+				}
+				if(world[x + y * WORLD_WIDTH].containsTexture(WATER_1) && world[(x + 1) + y * WORLD_WIDTH].containsTexture(GRASS))
+				{
+					world[(x + 1) + y * WORLD_WIDTH].setTexture(SAND);
+				}
+			}
+		}
 	}
 	
 	private static void placeGold()

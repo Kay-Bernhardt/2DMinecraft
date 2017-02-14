@@ -1,8 +1,6 @@
 package my2DMinecraft.entity;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.*;
 
 import my2DMinecraft.block.Block;
 import my2DMinecraft.graphics.BlockMesh;
@@ -12,6 +10,7 @@ import my2DMinecraft.graphics.VertexArray;
 import my2DMinecraft.input.Input;
 import my2DMinecraft.math.Matrix4f;
 import my2DMinecraft.math.Vector3f;
+import my2DMinecraft.utils.Window;
 import my2DMinecraft.world.World;
 
 public class Player
@@ -111,7 +110,7 @@ public class Player
 		this.collisionArray = collisionArray;
 		walking = false;
 		
-		fall();
+		//fall();
 		handleInput();		
 		World.camera.setPosition(position);
 		
@@ -195,19 +194,21 @@ public class Player
 		
 		if(Input.isKeyDown(GLFW_KEY_W))
 		{
-			//addPosition(new Vector3f(0.0f, -movementSpeed, 0.0f));
+			addPosition(new Vector3f(0.0f, -movementSpeed, 0.0f));
+			/*
 			if(fallSpeed >= maxFallSpeed)
 			{
 				fallSpeed = jumpSpeed;
-			}			
+			}		
+			*/
 		}
 		
-		/*
+		
 		if(Input.isKeyDown(GLFW_KEY_S))
 		{
 			addPosition(new Vector3f(0.0f, movementSpeed, 0.0f));
 		}
-		*/
+		
 	}
 	
 	private void addPosition(Vector3f position)
@@ -226,7 +227,7 @@ public class Player
 				}
 			}			
 		}
-		if(!colision)
+		if(!colision && inBounds(check))
 		{
 			this.position.add(position);
 		}				
@@ -273,5 +274,31 @@ public class Player
 	public Vector3f getPosition()
 	{
 		return this.position;
+	}
+	
+	public boolean inBounds(Vector3f pos)
+	{
+		int VIEW_Y = Window.getHeight() / 2;
+		
+		Vector3f pos1 = new Vector3f(pos.x, -pos.y - ((Block.BLOCK_SIZE * 2) + 1), 0.0f);
+		Vector3f pos2 = new Vector3f(World.LEFT, World.BOTTOM, 0.0f);
+		
+		if(pos1.x < pos2.x)
+		{
+			return false;
+		}
+		else if(pos1.x > -World.LEFT)
+		{
+			return false;
+		}
+		else if (pos1.y < pos2.y)
+		{
+			return false;
+		}
+		else if(pos1.y + ((Block.BLOCK_SIZE * 4) + 2) > -pos2.y)
+		{
+			return false;
+		}
+		return true;
 	}
 }

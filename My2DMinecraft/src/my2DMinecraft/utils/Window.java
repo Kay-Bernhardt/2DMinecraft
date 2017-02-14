@@ -123,4 +123,9 @@ public class Window
 	{
 		return HEIGHT;
 	}
+	
+	public static void setTitle(String str)
+	{
+		glfwSetWindowTitle(window, TITLE + " " + str);
+	}
 }

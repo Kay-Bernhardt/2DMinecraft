@@ -78,7 +78,37 @@ public class World
 			birds[i].update();
 		}
 		
-		mouseInput();		
+		mouseInput();
+		updateBlocksInView();
+	}
+	
+	private void updateBlocksInView()
+	{
+		Vector3f pos = calculateBlockPos(camera.getPosition());		
+		Shader.BLOCK.enable();
+		BlockMesh.bind();
+		
+		Block b = null;
+		
+		for(int x = 0; x < VIEW_X; x++)
+		{
+			for(int y = 0; y < VIEW_Y; y++)
+			{
+				//only update blocks in view				
+				int bx = (x + (int)pos.x - (VIEW_X / 2));
+				int by = (y + (int)pos.y - (VIEW_Y / 2));
+				
+				try
+				{					
+					b = world[bx + by * WORLD_WIDTH];
+				}catch(ArrayIndexOutOfBoundsException e) {}
+				
+				if(b != null)
+				{
+					b.update();
+				}
+			}			
+		}
 	}
 	
 	private void mouseInput()
@@ -101,6 +131,7 @@ public class World
 				//render block breakTexture
 				wait++;
 				isBreaking = true;
+				breakBlock.update();
 				if(wait == 20)
 				{
 					world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].setTexture(AIR);

@@ -42,25 +42,7 @@ public class AnimatedBlockState implements BlockState
 		texture[currStep].bind();
 		Shader.BLOCK.setUniformMatrix4f("vw_matrix", matrix);
 		BlockMesh.draw();
-		texture[currStep].unbind();
-		
-		if(counter >= timeBetweenSteps)
-		{
-			counter = 0;
-			
-			if(currStep < steps - 1)
-			{
-				currStep++;
-			}
-			else
-			{
-				currStep = 0;
-			}
-		}
-		else
-		{
-			counter++;
-		}		
+		texture[currStep].unbind();		
 	}
 
 	@Override
@@ -91,5 +73,27 @@ public class AnimatedBlockState implements BlockState
 	public BlockTexture getTexture()
 	{
 		return texture[0];
+	}
+
+	@Override
+	public void update()
+	{
+		if(counter >= timeBetweenSteps)
+		{
+			counter = 0;
+			
+			if(currStep < steps - 1)
+			{
+				currStep++;
+			}
+			else
+			{
+				currStep = 0;
+			}
+		}
+		else
+		{
+			counter++;
+		}		
 	}
 }

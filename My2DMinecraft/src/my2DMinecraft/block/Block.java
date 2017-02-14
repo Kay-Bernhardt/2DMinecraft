@@ -7,7 +7,7 @@ import my2DMinecraft.math.Matrix4f;
 
 public class Block
 {
-	public static final int BLOCK_SIZE = 32;
+	public static final int BLOCK_SIZE = 32 / 2;
 	
 	private BlockState state;
 	
@@ -19,6 +19,11 @@ public class Block
 	public void render(Matrix4f matrix)
 	{
 		state.render(matrix);
+	}
+	
+	public void update()
+	{
+		state.update();
 	}
 	
 	public void setTexture(BlockTexture newTexture)

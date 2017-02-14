@@ -53,6 +53,7 @@ public class Timer
 		if(System.currentTimeMillis() - timer > 1000) //one second
 		{
 			timer += 1000;
+			Window.setTitle(updates + " ups, " + frames + " fps");
 			System.out.println(updates + " ups, " + frames + " fps");
 			frames = 0;
 			updates = 0;

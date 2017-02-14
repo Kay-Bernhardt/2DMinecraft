@@ -7,6 +7,8 @@ public interface BlockState
 {
 	public void render(Matrix4f matrix);
 	
+	public void update();
+	
 	public BlockState setTexture(BlockTexture newTexture);
 	
 	public boolean containsTexture(BlockTexture otherTexture);

@@ -57,4 +57,11 @@ public class SimpleBlockState implements BlockState
 	{
 		return texture;
 	}
+
+	@Override
+	public void update()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }
