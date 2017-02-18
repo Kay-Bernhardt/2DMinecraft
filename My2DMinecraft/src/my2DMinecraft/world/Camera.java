@@ -1,5 +1,6 @@
 package my2DMinecraft.world;
 
+import my2DMinecraft.block.Block;
 import my2DMinecraft.math.Matrix4f;
 import my2DMinecraft.math.Vector3f;
 import my2DMinecraft.utils.Window;
@@ -20,7 +21,8 @@ public class Camera
 	
 	public void setPosition(Vector3f position)
 	{
-		this.position = inBounds(position);
+		Vector3f pos = new Vector3f(position);
+		this.position = inBounds(pos);
 	}
 	
 	public void addPosition(Vector3f position)
@@ -43,21 +45,25 @@ public class Camera
 		Vector3f pos1 = new Vector3f(pos.x, -pos.y - VIEW_Y, 0.0f);
 		Vector3f pos2 = new Vector3f(World.LEFT + VIEW_X, World.BOTTOM, 0.0f);
 		
-		if(pos1.x < pos2.x)
+		if(pos1.x < pos2.x + Block.BLOCK_SIZE) //right
 		{
-			return new Vector3f(pos2.x, pos.y, -0.8f);
+			//return new Vector3f(pos2.x, pos.y, -0.8f);
+			pos.x = pos2.x + Block.BLOCK_SIZE;
 		}
-		else if(pos1.x + VIEW_X > -World.LEFT)
+		if(pos1.x + VIEW_X > -World.LEFT)
 		{
-			return new Vector3f(-pos2.x, pos.y, -0.8f);
+			//return new Vector3f(-pos2.x, pos.y, -0.8f);
+			pos.x = -pos2.x + Block.BLOCK_SIZE;
 		}
-		else if (pos1.y < pos2.y)
+		if (pos1.y < pos2.y)
 		{
-			return new Vector3f(pos.x, -pos2.y - VIEW_Y, -0.8f);
+			//return new Vector3f(pos.x, -pos2.y - VIEW_Y, -0.8f);
+			pos.y = -pos2.y - VIEW_Y;
 		}
-		else if(pos1.y + (2 * VIEW_Y) > -pos2.y)
+		if(pos1.y + (2 * VIEW_Y) > -pos2.y)
 		{
-			return new Vector3f(pos.x, pos2.y + VIEW_Y, -0.8f);
+			//return new Vector3f(pos.x, pos2.y + VIEW_Y, -0.8f);
+			pos.y = pos2.y + VIEW_Y;
 		}
 		return pos;
 	}

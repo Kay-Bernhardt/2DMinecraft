@@ -15,6 +15,7 @@ import my2DMinecraft.graphics.Shader;
 import my2DMinecraft.input.Input;
 import my2DMinecraft.input.MouseButtonInput;
 import my2DMinecraft.input.MouseInput;
+import my2DMinecraft.input.MouseScrollInput;
 import my2DMinecraft.math.Matrix4f;
 
 public class Window
@@ -60,6 +61,7 @@ public class Window
 		glfwSetKeyCallback(window, new Input());
 		glfwSetCursorPosCallback(window, new MouseInput());
 		glfwSetMouseButtonCallback(window, new MouseButtonInput());
+		glfwSetScrollCallback(window, new MouseScrollInput());
 		
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowPos(window, (vidmode.width() - WIDTH) / 2, (vidmode.height() - HEIGHT) / 2); //center on screen

@@ -10,7 +10,6 @@ import my2DMinecraft.graphics.VertexArray;
 import my2DMinecraft.input.Input;
 import my2DMinecraft.math.Matrix4f;
 import my2DMinecraft.math.Vector3f;
-import my2DMinecraft.utils.Window;
 import my2DMinecraft.world.World;
 
 public class Player
@@ -278,16 +277,15 @@ public class Player
 	
 	public boolean inBounds(Vector3f pos)
 	{
-		int VIEW_Y = Window.getHeight() / 2;
 		
 		Vector3f pos1 = new Vector3f(pos.x, -pos.y - ((Block.BLOCK_SIZE * 2) + 1), 0.0f);
 		Vector3f pos2 = new Vector3f(World.LEFT, World.BOTTOM, 0.0f);
 		
-		if(pos1.x < pos2.x)
+		if(pos1.x < pos2.x + (Block.BLOCK_SIZE * 2)) //right
 		{
 			return false;
 		}
-		else if(pos1.x > -World.LEFT)
+		else if(pos1.x > -World.LEFT) //left
 		{
 			return false;
 		}

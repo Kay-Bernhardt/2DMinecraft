@@ -2,18 +2,18 @@ package my2DMinecraft.graphics;
 
 import my2DMinecraft.block.Block;
 
-public class BlockMesh
+public class BlockIconMesh
 {
 	public static VertexArray mesh;	
 	
-	public BlockMesh()
+	public BlockIconMesh()
 	{
 		float[] vertices = new float[]
 		{
-				-Block.BLOCK_SIZE, -Block.BLOCK_SIZE, 0.0f,
-				-Block.BLOCK_SIZE,  Block.BLOCK_SIZE, 0.0f,
-				 Block.BLOCK_SIZE,  Block.BLOCK_SIZE, 0.0f,
-				 Block.BLOCK_SIZE, -Block.BLOCK_SIZE, 0.0f
+				-Block.BLOCK_SIZE / 2, -Block.BLOCK_SIZE / 2, 0.0f,
+				-Block.BLOCK_SIZE / 2,  Block.BLOCK_SIZE / 2, 0.0f,
+				 Block.BLOCK_SIZE / 2,  Block.BLOCK_SIZE / 2, 0.0f,
+				 Block.BLOCK_SIZE / 2, -Block.BLOCK_SIZE / 2, 0.0f
 		};
 		
 		byte[] indices = new byte[]

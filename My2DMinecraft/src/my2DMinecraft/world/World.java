@@ -5,6 +5,7 @@ import static my2DMinecraft.graphics.BlockTexture.*;
 import my2DMinecraft.block.Block;
 import my2DMinecraft.entity.Bird;
 import my2DMinecraft.entity.Player;
+import my2DMinecraft.graphics.BlockIconMesh;
 import my2DMinecraft.graphics.BlockMesh;
 import my2DMinecraft.graphics.BlockMesh2;
 import my2DMinecraft.graphics.Shader;
@@ -27,6 +28,7 @@ public class World
 	private static Block[] world;
 	
 	public static Camera camera;
+	public Hotbar hotbar;
 	public Player player;
 	public Bird[] birds;
 	
@@ -42,10 +44,12 @@ public class World
 		
 		new BlockMesh();
 		new BlockMesh2();
+		new BlockIconMesh();
 		
 		camera = new Camera();
 		world = WorldGenerator.createWorld();
 		
+		hotbar = new Hotbar();
 		player = new Player();
 		birds = new Bird[10];
 		
@@ -150,7 +154,11 @@ public class World
 		
 		if(MouseButtonInput.rightReleased)
 		{
-			if(world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(CHEST_CLOSED))
+			if(world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(AIR))
+			{
+				world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].setTexture(hotbar.getSelectedTexture());
+			}
+			else if(world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(CHEST_CLOSED))
 			{
 				world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].setTexture(CHEST_OPEN);
 			}
@@ -192,6 +200,8 @@ public class World
 		{
 			birds[i].render();
 		}
+		
+		hotbar.render();
 	}
 	
 	private void renderBlocks()
@@ -254,6 +264,11 @@ public class World
 				Vector3f vector = new Vector3f();
 				vector.x = (x + pos.x - (arrayWidth / 2));
 				vector.y = (y + pos.y - (arrayHeight / 2));
+				
+				if(vector.x < 0)
+				{
+					vector.x = 0;
+				}
 				
 				if(world[(int)vector.x + (int)vector.y * WORLD_WIDTH].getTexture().isSolid)
 				{
