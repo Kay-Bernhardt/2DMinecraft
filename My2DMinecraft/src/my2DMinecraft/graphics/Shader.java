@@ -16,6 +16,7 @@ public class Shader
 	
 	public static Shader BLOCK;
 	public static Shader BIRD;
+	public static Shader BG;
 	
 	private boolean enabled = false;
 	
@@ -31,6 +32,7 @@ public class Shader
 	{
 		BLOCK = new Shader("block.vert", "block.frag");
 		BIRD = new Shader("bird.vert", "bird.frag");
+		BG = new Shader("bg.vert", "bg.frag");
 	}
 	
 	public int getUniform(String name)

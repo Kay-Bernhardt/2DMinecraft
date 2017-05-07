@@ -9,6 +9,8 @@ import my2DMinecraft.graphics.BlockIconMesh;
 import my2DMinecraft.graphics.BlockMesh;
 import my2DMinecraft.graphics.BlockMesh2;
 import my2DMinecraft.graphics.Shader;
+import my2DMinecraft.gui.CrystalCount;
+import my2DMinecraft.gui.HealthBar;
 import my2DMinecraft.input.MouseButtonInput;
 import my2DMinecraft.input.MouseInput;
 import my2DMinecraft.math.Matrix4f;
@@ -28,7 +30,10 @@ public class World
 	private static Block[] world;
 	
 	public static Camera camera;
+	private CaveBG caveBG;
 	public Hotbar hotbar;
+	public HealthBar healthbar;
+	public CrystalCount crystalCount;
 	public Player player;
 	public Bird[] birds;
 	
@@ -36,10 +41,15 @@ public class World
 	private Vector3f trueMousepos;
 	private boolean isBreaking;
 	private int wait;
-	private Block breakBlock;	
+	private Block breakBlock;
+	private Block targetBlock;
+	
+	private int invulnerable = 0;
 	
 	public World()
 	{
+		//setWorldParam(500, 128);
+		
 		System.out.println(LEFT + " " + BOTTOM);
 		
 		new BlockMesh();
@@ -50,6 +60,10 @@ public class World
 		world = WorldGenerator.createWorld();
 		
 		hotbar = new Hotbar();
+		healthbar = new HealthBar();
+		crystalCount = new CrystalCount();
+		
+		caveBG = new CaveBG();
 		player = new Player();
 		birds = new Bird[10];
 		
@@ -72,10 +86,48 @@ public class World
 		camera.addPosition(new Vector3f(0, -Block.BLOCK_SIZE, 0));
 		player.setPosition(camera.getPosition());
 	}
+
+	//title screen world constructor
+	public World(String str)
+	{
+		
+	}
+	
+	/*
+	private void setWorldParam(int width, int height)
+	{
+		WORLD_WIDTH = width;
+		WORLD_HEIGHT = height;
+		WORLD_SIZE = WORLD_WIDTH * WORLD_HEIGHT;
+		LEFT = -(WORLD_WIDTH * (Block.BLOCK_SIZE * 2)) / 2;
+		BOTTOM = -(WORLD_HEIGHT * (Block.BLOCK_SIZE * 2)) / 2;
+	}
+	*/
 	
 	public void update()
 	{
 		player.update(getSolidBlocksAroundPlayerPosition());
+		
+		//check for thorns take dmg
+		
+		if(invulnerable == 0)
+		{
+			Vector3f pos = calculatePositionInBlocks(player.getPosition());
+			if(world[(int)pos.x + (int)pos.y * WORLD_WIDTH].getTexture() == THORNY_PLANT)
+			{
+				healthbar.takeDamage();
+				invulnerable++;
+			}
+		}
+		else
+		{
+			invulnerable++;
+			if(invulnerable > 60)
+			{
+				invulnerable = 0;
+			}
+		}
+		
 		
 		for(int i = 0; i < birds.length; i++)
 		{
@@ -123,8 +175,11 @@ public class World
 		Vector3f absBlockpos = calculateBlockPos(trueMousepos);
 		
 		if(MouseButtonInput.leftClicked)
-		{			
-			if(!world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].containsTexture(AIR))
+		{
+			targetBlock = new Block();
+			targetBlock.setTexture(world[(int)absBlockpos.x + (int)absBlockpos.y * WORLD_WIDTH].getTexture());
+			
+			if(targetBlock.getTexture() != AIR)
 			{
 				if(breakBlock == null)
 				{
@@ -142,6 +197,11 @@ public class World
 					isBreaking = false;
 					wait = 0;
 					breakBlock = null;
+					
+					if(targetBlock.getTexture() == CARROT || targetBlock.getTexture() == APPLE_GREEN || targetBlock.getTexture() == APPLE_RED || targetBlock.getTexture() == POTION_RED || targetBlock.getTexture() == POTION_BLUE)
+					{
+						healthbar.gainHealth();
+					}
 				}				
 			}
 		}
@@ -150,6 +210,7 @@ public class World
 			isBreaking = false;
 			wait = 0;
 			breakBlock = null;
+			targetBlock = null;
 		}
 		
 		if(MouseButtonInput.rightReleased)
@@ -192,7 +253,9 @@ public class World
 	
 	
 	public void render()
-	{		
+	{
+		renderCaveBG();
+		
 		renderBlocks();
 		player.render();
 		
@@ -202,8 +265,18 @@ public class World
 		}
 		
 		hotbar.render();
+		healthbar.render();
+		crystalCount.render();
 	}
 	
+	private void renderCaveBG()
+	{
+		Shader.BG.enable();
+		Matrix4f matrix = Matrix4f.translate(new Vector3f(LEFT, BOTTOM, 0)).multiply(camera.getProjection());
+		caveBG.render(matrix);
+		Shader.BG.disable();
+	}
+
 	private void renderBlocks()
 	{
 		Vector3f pos = calculateBlockPos(camera.getPosition());		

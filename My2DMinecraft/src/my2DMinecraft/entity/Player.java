@@ -25,8 +25,9 @@ public class Player
 	private float movementSpeed;
 	private float fallSpeed;
 	private float jumpSpeed;
-	private float fallAcceleration;
-	private float maxFallSpeed;
+	private int jumpCount;
+	private boolean isJumping;
+	private float lastY;
 	
 	int wait;
 	int animationStep;
@@ -65,10 +66,11 @@ public class Player
 		position = new Vector3f();
 		
 		movementSpeed = 5.0f;
-		fallSpeed = movementSpeed;
-		jumpSpeed = -30.0f;
-		fallAcceleration = 3.0f;
-		maxFallSpeed = 20.0f;
+		fallSpeed = movementSpeed * 2;
+		jumpSpeed = -movementSpeed * 1.5f;
+		jumpCount = 0;
+		isJumping = false;
+		lastY = position.y;
 		
 		animationStep = 1;
 		wait = 0;
@@ -107,10 +109,11 @@ public class Player
 	public void update(Vector3f[] collisionArray)
 	{
 		this.collisionArray = collisionArray;
-		walking = false;
+		walking = false;		
 		
-		//fall();
+		fall();
 		handleInput();		
+		
 		World.camera.setPosition(position);
 		
 		if(!walking)
@@ -121,6 +124,8 @@ public class Player
 		{
 			renderWalking();
 		}
+		
+		lastY = position.y;
 	}
 	
 	private void renderWalking()
@@ -193,21 +198,42 @@ public class Player
 		
 		if(Input.isKeyDown(GLFW_KEY_W))
 		{
-			addPosition(new Vector3f(0.0f, -movementSpeed, 0.0f));
-			/*
-			if(fallSpeed >= maxFallSpeed)
+			//addPosition(new Vector3f(0.0f, -movementSpeed, 0.0f));
+			if(position.y == lastY)
 			{
-				fallSpeed = jumpSpeed;
-			}		
-			*/
-		}
-		
-		
+				isJumping = true;
+			}			
+		}		
+		/*
 		if(Input.isKeyDown(GLFW_KEY_S))
 		{
 			addPosition(new Vector3f(0.0f, movementSpeed, 0.0f));
 		}
-		
+		*/		
+	}
+	
+	private void fall()
+	{
+		if(isJumping)
+		{
+			if(jumpCount >= 15)
+			{
+				isJumping = false;
+				jumpCount = 0;
+				addPosition(new Vector3f(0.0f, 1.0f, 0.0f));
+			}
+			else
+			{
+				jumpCount++;
+				addPosition(new Vector3f(0.0f, jumpSpeed, 0.0f));
+			}
+		}
+		else
+		{
+			addPosition(new Vector3f(0.0f, fallSpeed, 0.0f));
+			addPosition(new Vector3f(0.0f, 1.0f, 0.0f));
+			addPosition(new Vector3f(0.0f, 0.1f, 0.0f));
+		}
 	}
 	
 	private void addPosition(Vector3f position)
@@ -250,18 +276,6 @@ public class Player
 		}
 		
 		return false;
-	}
-	
-	private void fall()
-	{
-		if(fallSpeed <= maxFallSpeed)
-		{
-			//System.out.println("meh");
-			fallSpeed += fallAcceleration;
-		}
-		
-		addPosition(new Vector3f(0.0f, fallSpeed, 0.0f));
-		addPosition(new Vector3f(0.0f, 1.0f, 0.0f));
 	}
 	
 	public void setPosition(Vector3f position)

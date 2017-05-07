@@ -30,13 +30,13 @@ public class Window
 	
 	public static void setup()
 	{
-		System.out.println("Initializing");
+		System.out.println("Initializing Window");
 		
 		initGlfw();
 		initWindow();
 		initGL();
 		
-		System.out.println("Initializing complete");
+		System.out.println("Initializing window complete");
 	}
 	
 	private static void initGlfw()
@@ -91,6 +91,9 @@ public class Window
 		
 		Shader.BIRD.setUniformMatrix4f("pr_matrix", pr_matrix);
 		Shader.BIRD.setUniform1i("tex", 1);
+		
+		Shader.BG.setUniformMatrix4f("pr_matrix", pr_matrix);
+		Shader.BG.setUniform1i("tex", 1);
 	}
 	
 	public static void swapBuffer()

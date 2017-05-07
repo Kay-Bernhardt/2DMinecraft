@@ -15,8 +15,8 @@ import my2DMinecraft.world.World;
 
 public class Bird
 {
-	private float[] vertices;
-	private byte[]  indices;
+	//private float[] vertices;
+	//private byte[]  indices;
 	private float[] tcs;
 	
 	private VertexArray mesh;

@@ -49,7 +49,7 @@ public class WorldGenerator
 		float[][] simplex = sn.generateSimplexNoise(WORLD_WIDTH, WORLD_HEIGHT / 2);
 		for(int y = 0; y < WORLD_HEIGHT / 2; y++)
 		{
-			for(int x = 0; x < WORLD_WIDTH; x++)
+			for(int x = 0; x < World.WORLD_WIDTH; x++)
 			{
 				if(simplex[x][y] > 0.36f)
 				{
